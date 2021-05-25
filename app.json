@@ -1,0 +1,12 @@
+{
+  "name": "chatMini",
+  "displayName": "chatMini",
+  "expo": {
+    "name": "chatMini",
+    "slug": "chatMini",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}
