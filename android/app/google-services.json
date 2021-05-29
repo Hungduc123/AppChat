@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "968182044266",
+    "project_id": "chat14-48f7a",
+    "storage_bucket": "chat14-48f7a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:968182044266:android:c0d34870b8a1da5cd15c13",
+        "android_client_info": {
+          "package_name": "com.chatmini"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "968182044266-6iji4g40gvjqcob4lcnuhqthed0fgnog.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.chatmini",
+            "certificate_hash": "6e7ba576a4f65e03b5aaf01a09aa150c4c106eee"
+          }
+        },
+        {
+          "client_id": "968182044266-5nh4pe8k371po8pcmp2csh9dnse2qmka.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC_-mIsWcez2ep-Mx7_0Wd8myv81LdoC0M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "968182044266-5nh4pe8k371po8pcmp2csh9dnse2qmka.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
