@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "626018536025",
+    "firebase_url": "https://appchat14android-default-rtdb.firebaseio.com",
+    "project_id": "appchat14android",
+    "storage_bucket": "appchat14android.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:626018536025:android:7c93d4e445d439aaa8bf48",
+        "android_client_info": {
+          "package_name": "com.phd.chat14android"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "626018536025-e5ir0rvc7n8s4e2l5aa7l9evld7v6ptk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.phd.chat14android",
+            "certificate_hash": "6e7ba576a4f65e03b5aaf01a09aa150c4c106eee"
+          }
+        },
+        {
+          "client_id": "626018536025-rfs0hjnpl75hgd5vo18pq8covhgc86vg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC1-CaPUqg1KKszsb5uhxw69hCvkORySVk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "626018536025-rfs0hjnpl75hgd5vo18pq8covhgc86vg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

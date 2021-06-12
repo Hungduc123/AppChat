@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">KotlinMessenger</string>
+    <string name="title_chat">Chat</string>
+    <string name="title_contacts">Contacts</string>
+    <string name="title_profile">Profile</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
