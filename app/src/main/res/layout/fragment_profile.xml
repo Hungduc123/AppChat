@@ -3,7 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
+        <variable
+            name="userModel"
+            type="com.phd.chat14android.models.User" />
     </data>
 
     <RelativeLayout
@@ -34,6 +36,7 @@
                     android:layout_width="100dp"
                     android:layout_height="100dp"
                     android:id="@+id/profile_image"
+                    imageUrl="@{userModel.profileImageUrl}"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="50dp"
                     android:src="@drawable/ic_user" />
