@@ -14,16 +14,13 @@ import androidx.databinding.DataBindingUtil
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ktx.database
-import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.phd.chat14android.MainActivity
 import com.phd.chat14android.R
-import com.phd.chat14android.User
 import com.phd.chat14android.databinding.ActivityRegisterBinding
+import com.phd.chat14android.models.User
 import com.phd.chat14android.ui.login.LoginActivity
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.activity_register.*
 import java.util.*
 
 
@@ -35,22 +32,18 @@ class RegisterActivity : AppCompatActivity() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_register)
 
 
-        register_button_register.setOnClickListener {
+        binding.registerButtonRegister.setOnClickListener {
            performRegistration()
-
-
-
-
-            Toast.makeText(this, "write data", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Login Success", Toast.LENGTH_SHORT).show()
         }
 
-        already_have_account_text_view.setOnClickListener {
+        binding.alreadyHaveAccountTextView.setOnClickListener {
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
             overridePendingTransition(R.anim.enter, R.anim.exit)
         }
 
-        selectphoto_button_register.setOnClickListener {
+        binding.selectphotoButtonRegister.setOnClickListener {
             val intent = Intent(Intent.ACTION_PICK)
             intent.type = "image/*"
             startActivityForResult(intent, 0)
@@ -69,19 +62,19 @@ class RegisterActivity : AppCompatActivity() {
                 val picturePath = it.getString(columnIndex)
                 // If picture chosen from camera rotate by 270 degrees else
                 if (picturePath.contains("DCIM")) {
-                    Picasso.get().load(selectedPhotoUri).rotate(270f).into(selectphoto_imageview_register)
+                    Picasso.get().load(selectedPhotoUri).rotate(270f).into(binding.selectphotoImageviewRegister)
                 } else {
-                    Picasso.get().load(selectedPhotoUri).into(selectphoto_imageview_register)
+                    Picasso.get().load(selectedPhotoUri).into(binding.selectphotoImageviewRegister)
                 }
             }
-            selectphoto_button_register.alpha = 0f
+            binding.selectphotoButtonRegister.alpha = 0f
         }
     }
 
     private fun performRegistration() {
-        val email = email_edittext_register.text.toString()
-        val password = password_edittext_register.text.toString()
-        val name = name_edittext_register.text.toString()
+        val email = binding.emailEdittextRegister.text.toString()
+        val password = binding.passwordEdittextRegister.text.toString()
+        val name = binding.nameEdittextRegister.text.toString()
 
         if (email.isEmpty() || password.isEmpty() || name.isEmpty()) {
             Toast.makeText(this, "Please fill all the fields", Toast.LENGTH_SHORT).show()
@@ -93,8 +86,8 @@ class RegisterActivity : AppCompatActivity() {
             return
         }
 
-        already_have_account_text_view.visibility = View.GONE
-        loading_view.visibility = View.VISIBLE
+        binding.alreadyHaveAccountTextView.visibility = View.GONE
+        binding.loadingView.visibility = View.VISIBLE
 
         // Firebase Authentication to create a user with email and password
         FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
@@ -102,22 +95,17 @@ class RegisterActivity : AppCompatActivity() {
                 if (!it.isSuccessful) return@addOnCompleteListener
 
                 // else if successful
-                loading_view.visibility = View.GONE
-                already_have_account_text_view.visibility = View.VISIBLE
+                binding.loadingView.visibility = View.GONE
+                binding.alreadyHaveAccountTextView.visibility = View.VISIBLE
 
                 Log.d("TAG", "Successfully created user with uid: ${it.result!!.user?.uid}")
-                val database = Firebase.database
-                val myRef = database.getReference("/user/"+it.result!!.user?.uid)
-
-                myRef.setValue("Hello, World!")
-
-
+                uploadImageToFirebaseStorage()
 
             }
             .addOnFailureListener {
                 Log.d("TAG", "Failed to create user: ${it.message}")
-                loading_view.visibility = View.GONE
-                already_have_account_text_view.visibility = View.VISIBLE
+                binding.loadingView.visibility = View.GONE
+                binding.alreadyHaveAccountTextView.visibility = View.VISIBLE
                 Toast.makeText(this, "${it.message}", Toast.LENGTH_LONG).show()
             }
     }
@@ -141,8 +129,8 @@ class RegisterActivity : AppCompatActivity() {
                 }
                 .addOnFailureListener {
                     Log.d(TAG, "Failed to upload image to storage: ${it.message}")
-                    loading_view.visibility = View.GONE
-                    already_have_account_text_view.visibility = View.VISIBLE
+                    binding.loadingView.visibility = View.GONE
+                    binding.alreadyHaveAccountTextView.visibility = View.VISIBLE
                 }
         }
 
@@ -153,9 +141,9 @@ class RegisterActivity : AppCompatActivity() {
         val ref = FirebaseDatabase.getInstance().getReference("/users/$uid")
 
         val user = if (profileImageUrl == null) {
-            User(uid, name_edittext_register.text.toString(), null)
+            User(uid, binding.nameEdittextRegister.text.toString(), null)
         } else {
-            User(uid, name_edittext_register.text.toString(), profileImageUrl)
+            User(uid, binding.nameEdittextRegister.text.toString(), profileImageUrl)
         }
 
         ref.setValue(user)
@@ -169,8 +157,8 @@ class RegisterActivity : AppCompatActivity() {
             }
             .addOnFailureListener {
                 Log.d(TAG, "Failed to set value to database: ${it.message}")
-                loading_view.visibility = View.GONE
-                already_have_account_text_view.visibility = View.VISIBLE
+                binding.loadingView.visibility = View.GONE
+                binding.alreadyHaveAccountTextView.visibility = View.VISIBLE
             }
     }
 }

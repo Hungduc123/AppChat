@@ -14,7 +14,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.phd.chat14android.MainActivity
 import com.phd.chat14android.R
 import com.phd.chat14android.databinding.ActivityLoginBinding
-import kotlinx.android.synthetic.main.activity_login.*
 
 class LoginActivity : AppCompatActivity() {
     private val TAG = LoginActivity::class.java.simpleName

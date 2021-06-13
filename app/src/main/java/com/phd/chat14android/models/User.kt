@@ -1,14 +1,19 @@
-package com.phd.chat14android
+package com.phd.chat14android.models
 
+import com.google.firebase.database.IgnoreExtraProperties
 
-import android.os.Parcel
-import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
+@IgnoreExtraProperties
+class User {
+    var uid: String? = null
+    var name: String? = null
+    var profileImageUrl: String? = null
+    constructor() {}
+    constructor(uid:String?,name:String?,profileImageUrl:String?){
+        this.uid = uid
+        this.name = name
+        this.profileImageUrl = profileImageUrl
 
-@Parcelize
-data class User(
-    val uid: String,
-    val name: String,
-    val profileImageUrl: String?
-) : Parcelable
+    }
+}
+
 

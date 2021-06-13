@@ -5,30 +5,27 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.NonNull
+import androidx.databinding.DataBindingUtil
+import com.bumptech.glide.Glide
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.database.*
+import com.google.firebase.database.ktx.getValue
 import com.phd.chat14android.R
+import com.phd.chat14android.databinding.FragmentProfileBinding
+import com.phd.chat14android.models.User
+import kotlinx.android.synthetic.main.fragment_profile.*
 
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [ProfileFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class ProfileFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
+    private lateinit var binding:FragmentProfileBinding
+    private lateinit var reference: DatabaseReference
+    private lateinit var fUser : FirebaseUser
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
+
     }
 
     override fun onCreateView(
@@ -36,26 +33,28 @@ class ProfileFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_profile, container, false)
-    }
+        binding = DataBindingUtil.inflate(inflater,R.layout.fragment_profile,container,false)
+        fUser = FirebaseAuth.getInstance().currentUser!!
+        reference = FirebaseDatabase.getInstance().getReference("users").child(fUser.uid)
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment ProfileFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            ProfileFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+        reference.addValueEventListener(object :ValueEventListener{
+            override fun onDataChange( snapshot: DataSnapshot) {
+                val user= snapshot.getValue(User::class.java)
+                username.text = user?.name
+                if (user?.profileImageUrl == null){
+                    profile_image.setImageResource(R.drawable.ic_user)
+                }else{
+                    Glide.with(context!!).load(user.profileImageUrl).into(profile_image)
                 }
             }
+
+            override fun onCancelled(error: DatabaseError) {
+
+            }
+
+        })
+
+        return binding.root
     }
+
 }
