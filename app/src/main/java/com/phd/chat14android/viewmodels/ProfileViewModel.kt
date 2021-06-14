@@ -14,6 +14,10 @@ class ProfileViewModel : ViewModel() {
         return appRepo.getUser()
     }
 
+    fun updateName(userName: String?) {
+        appRepo.updateName(userName!!)
+    }
+
     fun updateStatus(status:String){
         appRepo.updateStatus(status)
     }

@@ -73,6 +73,7 @@
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:id="@+id/cardNamme"
             android:layout_below="@+id/cardView1">
 
             <LinearLayout

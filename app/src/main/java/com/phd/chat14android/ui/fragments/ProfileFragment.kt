@@ -1,6 +1,9 @@
 package com.phd.chat14android.ui.fragments
 
 import android.app.AlertDialog
+import android.content.Context
+import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.Layout
 import androidx.fragment.app.Fragment
@@ -12,6 +15,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.phd.chat14android.R
 import com.phd.chat14android.databinding.FragmentProfileBinding
+import com.phd.chat14android.ui.EditNameActivity
 import com.phd.chat14android.viewmodels.ProfileViewModel
 import kotlinx.android.synthetic.main.dialog_layout.view.*
 
@@ -22,6 +26,7 @@ class ProfileFragment : Fragment() {
     private lateinit var dialog: AlertDialog
     private lateinit var binding:FragmentProfileBinding
     private lateinit var viewModels: ProfileViewModel
+    private lateinit var sharedPreferences: SharedPreferences
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -31,27 +36,38 @@ class ProfileFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         binding = DataBindingUtil.inflate(inflater,R.layout.fragment_profile,container,false)
 
+        sharedPreferences = requireContext().getSharedPreferences("userData", Context.MODE_PRIVATE)
         viewModels = ViewModelProvider.AndroidViewModelFactory
             .getInstance(requireActivity().application)
             .create(ProfileViewModel::class.java)
 
-        viewModels.getUser().observe(viewLifecycleOwner, Observer {
-            binding.userModel = it
-            binding.username.text = it.name
-            if (it.name?.contains(" ")!!){
-                var split = it.name?.split(" ")
+
+        viewModels.getUser().observe(viewLifecycleOwner, Observer { userModel->
+            binding.userModel = userModel
+
+            binding.username.text = userModel.name
+            if (userModel.name?.contains(" ")!!){
+                var split = userModel.name?.split(" ")
                 binding.txtProfileFName.text = split!![0]
-                binding.txtProfileLName.text = split!![1]
+                binding.txtProfileLName.text = split[1]
+            }
+
+            //Update status
+            binding.txtProfileStatus.setOnClickListener{
+                getStatusDialog()
+            }
+
+            //Update Name
+            binding.cardNamme.setOnClickListener {
+                val intent = Intent(context, EditNameActivity::class.java)
+                intent.putExtra("name",userModel.name)
+                startActivityForResult(intent, 100)
+
             }
 
         })
-
-        binding.txtProfileStatus.setOnClickListener{
-            getStatusDialog()
-        }
 
 
         return binding.root
@@ -74,5 +90,18 @@ class ProfileFragment : Fragment() {
         dialog.show()
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            100 -> {
+                if (data != null) {
+                    val userName = data.getStringExtra("name")
+                    viewModels.updateName(userName!!)
+                    val editor = sharedPreferences.edit()
+                    editor.putString("myName", userName).apply()
+                }
 
+            }
+        }
+    }
 }

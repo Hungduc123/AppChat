@@ -9,7 +9,8 @@ data class User(
     var uid: String? = null,
     var name: String? = null,
     var profileImageUrl: String? = null,
-    val status: String = ""
+    val status: String = "",
+    val online: String = "offline"
 ){
 
     companion object {
