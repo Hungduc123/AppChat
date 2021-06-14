@@ -20,6 +20,7 @@ private const val ARG_PARAM2 = "param2"
  */
 class ChatFragment : Fragment() {
     // TODO: Rename and change types of parameters
+    private val TAG = ChatFragment::class.java.simpleName
     private var param1: String? = null
     private var param2: String? = null
 

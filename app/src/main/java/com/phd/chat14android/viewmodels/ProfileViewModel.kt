@@ -10,8 +10,12 @@ class ProfileViewModel : ViewModel() {
     private var appRepo = AppRepo.StaticFunction.getInstance()
 
 
-    public fun getUser() : LiveData<User> {
+     fun getUser() : LiveData<User> {
         return appRepo.getUser()
+    }
+
+    fun updateStatus(status:String){
+        appRepo.updateStatus(status)
     }
 
 }

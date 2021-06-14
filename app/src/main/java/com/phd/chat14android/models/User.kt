@@ -8,7 +8,8 @@ import de.hdodenhof.circleimageview.CircleImageView
 data class User(
     var uid: String? = null,
     var name: String? = null,
-    var profileImageUrl: String? = null
+    var profileImageUrl: String? = null,
+    val status: String = ""
 ){
 
     companion object {
@@ -23,15 +24,5 @@ data class User(
     }
 
 }
-
-
-//    constructor() {}
-//    constructor(uid:String?,name:String?,profileImageUrl:String?){
-//        this.uid = uid
-//        this.name = name
-//        this.profileImageUrl = profileImageUrl
-//
-//    }
-
 
 
