@@ -28,7 +28,7 @@ import kotlinx.android.synthetic.main.dialog_layout.view.*
 import java.util.*
 
 
-class ProfileFragment : Fragment() {
+class  ProfileFragment : Fragment() {
 
     private val TAG = ProfileFragment::class.java.simpleName
     private lateinit var dialog: AlertDialog

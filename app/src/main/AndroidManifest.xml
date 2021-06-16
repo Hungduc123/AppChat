@@ -18,14 +18,14 @@
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat" />
         <activity android:name=".ui.EditNameActivity"></activity>
-        <activity android:name=".ui.register.RegisterActivity">
+        <activity android:name=".ui.auth.RegisterActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.login.LoginActivity"></activity>
+        <activity android:name=".ui.auth.LoginActivity"></activity>
         <activity android:name=".MainActivity"></activity>
     </application>
 

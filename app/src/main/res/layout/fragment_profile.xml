@@ -5,7 +5,7 @@
     <data>
         <variable
             name="userModel"
-            type="com.phd.chat14android.models.User" />
+            type="com.phd.chat14android.data.models.User" />
     </data>
 
     <RelativeLayout

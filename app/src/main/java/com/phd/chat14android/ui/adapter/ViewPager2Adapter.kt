@@ -1,4 +1,4 @@
-package com.phd.chat14android.adapter
+package com.phd.chat14android.ui.adapter
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity

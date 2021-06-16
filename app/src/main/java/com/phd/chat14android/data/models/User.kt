@@ -1,4 +1,4 @@
-package com.phd.chat14android.models
+package com.phd.chat14android.data.models
 
 import androidx.databinding.BindingAdapter
 import com.bumptech.glide.Glide
