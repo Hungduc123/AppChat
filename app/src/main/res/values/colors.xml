@@ -9,4 +9,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="colorPrimary">@android:color/black</color>
     <color name="colorAccent">@android:color/holo_red_dark</color>
+
+    <item name="cardBackground" type="color">#f6f6f6</item>
+    <color name="textColor">#999DA4</color>
 </resources>

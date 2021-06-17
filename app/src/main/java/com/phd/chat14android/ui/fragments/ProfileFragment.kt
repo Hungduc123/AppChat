@@ -32,7 +32,7 @@ class  ProfileFragment : Fragment() {
 
     private val TAG = ProfileFragment::class.java.simpleName
     private lateinit var dialog: AlertDialog
-    private lateinit var binding:FragmentProfileBinding
+    private lateinit var binding: FragmentProfileBinding
     private lateinit var viewModel: ProfileViewModel
     private lateinit var sharedPreferences: SharedPreferences
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,7 +44,7 @@ class  ProfileFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = DataBindingUtil.inflate(inflater,R.layout.fragment_profile,container,false)
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_profile, container, false)
 
         sharedPreferences = requireContext().getSharedPreferences("userData", Context.MODE_PRIVATE)
         viewModel = ViewModelProvider.AndroidViewModelFactory
@@ -52,35 +52,40 @@ class  ProfileFragment : Fragment() {
             .create(ProfileViewModel::class.java)
 
 
-        viewModel.getUser().observe(viewLifecycleOwner, Observer { userModel->
+        viewModel.getUser().observe(viewLifecycleOwner, Observer { userModel ->
             binding.userModel = userModel
 
             binding.username.text = userModel.name
-            if (userModel.name?.contains(" ")!!){
+            if (userModel.name?.contains(" ")!!) {
                 var split = userModel.name?.split(" ")
                 binding.txtProfileFName.text = split!![0]
                 binding.txtProfileLName.text = split[1]
             }
 
             //Update status
-            binding.txtProfileStatus.setOnClickListener{
+            binding.txtProfileStatus.setOnClickListener {
                 getStatusDialog()
             }
 
             //Update Name
             binding.cardNamme.setOnClickListener {
                 val intent = Intent(context, EditNameActivity::class.java)
-                intent.putExtra("name",userModel.name)
+                intent.putExtra("name", userModel.name)
                 startActivityForResult(intent, 100)
             }
 
         }) // end of  viewModel.getUser().observe
 
         binding.profileImage.setOnClickListener {
-                pickImage()
+            pickImage()
         }
 
         return binding.root
+    }
+
+    private fun pickImage() {
+        CropImage.activity().setCropShape(CropImageView.CropShape.OVAL)
+            .start(requireContext(), this)
     }
 
     private fun pickImage() {
@@ -121,12 +126,10 @@ class  ProfileFragment : Fragment() {
                 if (data != null) {
                     val result = CropImage.getActivityResult(data)
                     if (resultCode == Activity.RESULT_OK) {
-                        viewModel.uploadImageToFirebaseStorage(result.uri)
+                        viewModel.updateImage(result.uri)
                     }
                 }
-            } //end of requrecode cropImage
-
-        } // end of loop
-    } // end of fun onActivityResult
-
+            }
+        }
+    }
 }

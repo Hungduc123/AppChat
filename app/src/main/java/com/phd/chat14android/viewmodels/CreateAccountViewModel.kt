@@ -8,11 +8,14 @@ import com.phd.chat14android.data.repository.AuthRepository
 import com.phd.chat14android.models.Event
 import com.phd.chat14android.data.Result
 import com.phd.chat14android.data.models.User
+import com.phd.chat14android.data.repository.AppRepo
 
 class CreateAccountViewModel : DefaultViewModel() {
 
 //    private val dbRepository = DatabaseRepository()
     private var authRepository = AuthRepository.StaticFunction.getInstance()
+    private var appRepo = AppRepo.StaticFunction.getInstance()
+
     private val mIsCreatedEvent = MutableLiveData<Event<FirebaseUser>>()
 
     val isCreatedEvent: LiveData<Event<FirebaseUser>> = mIsCreatedEvent
@@ -28,7 +31,10 @@ class CreateAccountViewModel : DefaultViewModel() {
 
         authRepository.createUser(createUser) { result: Result<FirebaseUser> ->
             onResult(null, result)
-            if (result is Result.Success) { mIsCreatedEvent.value = Event(result.data!!) }
+            if (result is Result.Success) {
+                mIsCreatedEvent.value = Event(result.data!!)
+                appRepo.updateName(createUser.displayName)
+            }
             if (result is Result.Success || result is Result.Error) isCreatingAccount.value = false
         }
     }

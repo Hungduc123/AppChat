@@ -23,6 +23,10 @@ class ProfileViewModel : ViewModel() {
         appRepo.updateStatus(status)
     }
 
+    fun updateImage(imageUri: Uri){
+        appRepo.uploadImageToFirebaseStorage(imageUri)
+    }
+
 //    fun updateImage(imagePath:String){
 //        appRepo.updateImage(imagePath)
 //    }

@@ -1,34 +1,37 @@
 package com.phd.chat14android.ui.fragments
 
+import android.app.AlertDialog
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.SearchView
+import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.phd.chat14android.R
+import com.phd.chat14android.data.models.ContactUser
+import com.phd.chat14android.data.models.User
+import com.phd.chat14android.databinding.FragmentContactsBinding
+import com.phd.chat14android.ui.adapter.ContactAdapter
+import com.phd.chat14android.viewmodels.ContactViewModel
+import dmax.dialog.SpotsDialog
+import java.util.*
 
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [ContactsFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class ContactsFragment : Fragment() {
-    private val TAG = ContactsFragment::class.java.simpleName
-    private var param1: String? = null
-    private var param2: String? = null
+
+    private lateinit var viewModel: ContactViewModel
+    private var userList: List<User> = ArrayList<User>()
+    private var adapter: ContactAdapter? = null
+    private lateinit var binding:FragmentContactsBinding
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
+
     }
 
     override fun onCreateView(
@@ -36,26 +39,60 @@ class ContactsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_contacts, container, false)
+
+        binding = DataBindingUtil.inflate(inflater,R.layout.fragment_contacts,container,false)
+
+        viewModel = ViewModelProvider.AndroidViewModelFactory
+            .getInstance(requireActivity().application)
+            .create(ContactViewModel::class.java)
+
+        setUpRecycle()
+
+        adapter = ContactAdapter()
+        binding.recycleViewId.setHasFixedSize(true)
+        binding.recycleViewId.layoutManager = LinearLayoutManager(activity)
+
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment ContactsFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            ContactsFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        binding.searchViewId.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(s: String): Boolean {
+                val dialogue = SpotsDialog.Builder().setContext(activity).setTheme(R.style.Custom)
+                    .setCancelable(true).build()
+                dialogue.show()
+                viewModel.search(s)
+                viewModel.searchLiveData?.observe(
+                    activity!!, { User ->
+                        dialogue.dismiss()
+                        userList =User as List<User>
+                        adapter!!.getContactList(userList)
+                        binding.recycleViewId.adapter = adapter
+                    })
+                return false
             }
+
+            override fun onQueryTextChange(newText: String): Boolean {
+                return false
+            }
+        })
+
     }
+
+    private fun setUpRecycle() {
+        val dialogue: AlertDialog =
+            SpotsDialog.Builder().setContext(activity).setTheme(R.style.Custom).setCancelable(true).build()
+        dialogue.show()
+        //viewModel.show()
+        viewModel.getContactLiveData?.observe( requireActivity(), Observer  { User ->
+            dialogue.dismiss()
+            userList = User as List<User>
+            //userList.clear();
+            adapter?.getContactList(userList)
+            binding.recycleViewId.adapter = adapter
+        })
+    }
+
 }
