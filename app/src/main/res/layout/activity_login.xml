@@ -4,9 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-        <variable
-            name="viewmodel"
-            type="com.phd.chat14android.viewmodels.LoginViewModel" />
 
     </data>
 
@@ -14,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/colorPrimary"
-        tools:context=".ui.auth.LoginActivity">
+        tools:context=".ui.login.LoginActivity">
 
         <ImageView
             android:id="@+id/kotlinImageView"
@@ -40,7 +37,6 @@
             android:hint="Email"
             android:inputType="textEmailAddress"
             android:paddingLeft="16dp"
-            android:text="@={viewmodel.emailText}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
@@ -54,7 +50,6 @@
             android:background="@drawable/rounded_edittext_register_login"
             android:ems="10"
             android:hint="Password"
-            android:text="@={viewmodel.passwordText}"
             android:inputType="textPassword"
             android:paddingLeft="16dp"
             app:layout_constraintEnd_toEndOf="@+id/email_edittext_login"
@@ -70,9 +65,6 @@
             android:layout_marginTop="8dp"
             android:background="@drawable/rounded_button"
             android:text="Login"
-            android:enabled="@{!viewmodel.isLoggingIn()}"
-            android:onClick="@{() -> viewmodel.loginPressed()}"
-            tools:enabled="@{true}"
             android:textColor="@android:color/white"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="@+id/password_edittext_login"

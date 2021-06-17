@@ -1,35 +1,36 @@
 package com.phd.chat14android.ui.fragments
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.*
+import com.google.firebase.ktx.Firebase
 import com.phd.chat14android.R
+import com.phd.chat14android.adapter.listFriendAdapter
+import com.phd.chat14android.models.User
+import java.lang.StringBuilder
 
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [ChatFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
+@Suppress("UNREACHABLE_CODE", "UnusedEquals", "IMPLICIT_CAST_TO_ANY")
 class ChatFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private val TAG = ChatFragment::class.java.simpleName
-    private var param1: String? = null
-    private var param2: String? = null
+
+
+
+    private var database: DatabaseReference = FirebaseDatabase.getInstance().getReference("/users")
+    lateinit var recycleView: RecyclerView
+    var layoutManager: GridLayoutManager? = null
+    var users= ArrayList<User>();
+    var currentUser = User()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
+
     }
 
     override fun onCreateView(
@@ -37,26 +38,77 @@ class ChatFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_chat, container, false)
+        val v : View = inflater.inflate(R.layout.fragment_chat, container, false)
+       recycleView = v.findViewById(R.id.rvListFriend)
+        val adapter=listFriendAdapter()
+        recycleView.adapter=adapter
+        adapter.dataSet=users
+//      layoutManager = GridLayoutManager(v.context, 1)
+//       recycleView.layoutManager = layoutManager
+//       recycleView.adapter = listFriendAdapter(users)
+//        val headerAdapter = HeaderAdapter()
+//        val flowersAdapter = FlowersAdapter { flower -> adapterOnClick(flower) }
+//        val concatAdapter = ConcatAdapter(headerAdapter, flowersAdapter)
+//        val recyclerView: RecyclerView = findViewById(R.id.recycler_view)
+//        recycleView.adapter = concatAdapter
+        return v
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment ChatFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            ChatFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+
+        var uidCr = Firebase.auth.currentUser
+        var getData = object : ValueEventListener {
+            override fun onDataChange(p0: DataSnapshot) {
+
+                var sb = StringBuilder()
+
+
+
+                for (i in p0.children) {
+
+                    if (uidCr != null) {
+                        if (uidCr.uid == i.child("uid").value) {
+                            currentUser.name = i.child("name").value as String
+
+                            currentUser.profileImageUrl = i.child("profileImageUrl").value as String
+                            currentUser.uid = i.child("uid").value as String
+                            currentUser.status = i.child("status").value as String
+                            currentUser.online = i.child("online").value as String
+
+                        } else {
+
+
+                            users.add(
+                                User(
+                                    i.child("uid").value as String?,
+                                    i.child("name").value as String?,
+                                    i.child("profileImageUrl").value as String?,
+                                    i.child("status").value as String,
+                                    i.child("online").value as String
+                                )
+                            )
+
+                        }
+                    }
                 }
+                Log.i("AAAAA",currentUser.toString())
+                Log.i("AAAAA",users.toString())
+
+
+
             }
+
+            override fun onCancelled(p0: DatabaseError) {
+            }
+
+        }
+        database.addValueEventListener(getData)
+        database.addListenerForSingleValueEvent(getData)
     }
+
 }
+
+
+
