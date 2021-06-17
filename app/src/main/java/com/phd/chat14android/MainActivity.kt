@@ -3,13 +3,11 @@ package com.phd.chat14android
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 
-import com.phd.chat14android.adapter.ViewPager2Adapter
+import com.phd.chat14android.ui.adapter.ViewPager2Adapter
 import com.phd.chat14android.databinding.ActivityMainBinding
-import com.phd.chat14android.ui.fragments.ChatFragment
 
 class MainActivity : AppCompatActivity() {
 

@@ -1,10 +1,14 @@
-package com.phd.chat14android.repository
+package com.phd.chat14android.data.repository
 
+import android.content.ContentValues
+import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.database.*
-import com.phd.chat14android.models.User
+import com.phd.chat14android.data.models.User
 import com.phd.chat14android.util.AppUtil
+import java.util.*
 
 class AppRepo {
     private var liveData:MutableLiveData<User>?= null
@@ -60,6 +64,35 @@ class AppRepo {
 
         val map:Map<String,Any> = mapOf<String,Any>("status" to status)
         databaseReference.updateChildren(map)
+    }
+
+    fun updateImagePath(imagePath: String) {
+        val databaseReference =
+            FirebaseDatabase.getInstance().getReference("users").child(appUtil.getUID()!!)
+
+        val map = mapOf<String, Any>("profileImageUrl" to imagePath)
+        databaseReference.updateChildren(map)
+    }
+
+    fun uploadImageToFirebaseStorage(imageUri: Uri){
+
+        val filename = UUID.randomUUID().toString()
+        val ref = FirebaseStorage.getInstance().getReference("/images/$filename")
+        ref.putFile(imageUri)
+            .addOnSuccessListener {
+                Log.d(ContentValues.TAG, "Successfully uploaded image: ${it.metadata?.path}")
+
+                @Suppress("NestedLambdaShadowedImplicitParameter")
+                ref.downloadUrl.addOnSuccessListener {
+                    Log.d(ContentValues.TAG, "File Location: $it")
+                    //saveUserToFirebaseDatabase(it.toString())
+                    updateImagePath(it.toString())
+                }
+            }
+            .addOnFailureListener {
+                Log.d(ContentValues.TAG, "Failed to upload image to storage: ${it.message}")
+
+            }
     }
 
 
