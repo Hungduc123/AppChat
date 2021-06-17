@@ -37,27 +37,8 @@ class ChatFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         val v : View = inflater.inflate(R.layout.fragment_chat, container, false)
-       recycleView = v.findViewById(R.id.rvListFriend)
-        val adapter=listFriendAdapter()
-        recycleView.adapter=adapter
-        adapter.dataSet=users
-//      layoutManager = GridLayoutManager(v.context, 1)
-//       recycleView.layoutManager = layoutManager
-//       recycleView.adapter = listFriendAdapter(users)
-//        val headerAdapter = HeaderAdapter()
-//        val flowersAdapter = FlowersAdapter { flower -> adapterOnClick(flower) }
-//        val concatAdapter = ConcatAdapter(headerAdapter, flowersAdapter)
-//        val recyclerView: RecyclerView = findViewById(R.id.recycler_view)
-//        recycleView.adapter = concatAdapter
-        return v
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-
+        // Inflate the layout for this fragment////////////
         var uidCr = Firebase.auth.currentUser
         var getData = object : ValueEventListener {
             override fun onDataChange(p0: DataSnapshot) {
@@ -93,6 +74,11 @@ class ChatFragment : Fragment() {
                         }
                     }
                 }
+                recycleView = v.findViewById(R.id.rvListFriend)
+                val adapter=listFriendAdapter()
+                recycleView.adapter=adapter
+                Log.i("bbbb",users.toString())
+                adapter.dataSet=users
                 Log.i("AAAAA",currentUser.toString())
                 Log.i("AAAAA",users.toString())
 
@@ -106,6 +92,68 @@ class ChatFragment : Fragment() {
         }
         database.addValueEventListener(getData)
         database.addListenerForSingleValueEvent(getData)
+
+        /////////////////////////
+
+
+
+        return v
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+
+//        var uidCr = Firebase.auth.currentUser
+//        var getData = object : ValueEventListener {
+//            override fun onDataChange(p0: DataSnapshot) {
+//
+//                var sb = StringBuilder()
+//
+//
+//
+//                for (i in p0.children) {
+//
+//                    if (uidCr != null) {
+//                        if (uidCr.uid == i.child("uid").value) {
+//                            currentUser.name = i.child("name").value as String
+//
+//                            currentUser.profileImageUrl = i.child("profileImageUrl").value as String
+//                            currentUser.uid = i.child("uid").value as String
+//                            currentUser.status = i.child("status").value as String
+//                            currentUser.online = i.child("online").value as String
+//
+//                        } else {
+//
+//
+//                            users.add(
+//                                User(
+//                                    i.child("uid").value as String?,
+//                                    i.child("name").value as String?,
+//                                    i.child("profileImageUrl").value as String?,
+//                                    i.child("status").value as String,
+//                                    i.child("online").value as String
+//                                )
+//                            )
+//
+//                        }
+//                    }
+//                }
+//                Log.i("AAAAA",currentUser.toString())
+//                Log.i("AAAAA",users.toString())
+//
+//
+//
+//            }
+//
+//            override fun onCancelled(p0: DatabaseError) {
+//            }
+//
+//        }
+//        database.addValueEventListener(getData)
+//        database.addListenerForSingleValueEvent(getData)
+
+
     }
 
 }
