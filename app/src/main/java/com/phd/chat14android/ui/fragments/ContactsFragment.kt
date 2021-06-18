@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -22,7 +23,7 @@ import dmax.dialog.SpotsDialog
 import java.util.*
 
 
-class ContactsFragment : Fragment(){
+class ContactsFragment : Fragment(),ContactAdapter.OnItemClickListener{
 
     private lateinit var viewModel: ContactViewModel
     private var userList: List<User> = ArrayList<User>()
@@ -49,7 +50,7 @@ class ContactsFragment : Fragment(){
 
         setUpRecycle()
 
-        adapter = ContactAdapter()
+        adapter = ContactAdapter(this)
         binding.recycleViewId.setHasFixedSize(true)
         binding.recycleViewId.layoutManager = LinearLayoutManager(activity)
 
@@ -86,7 +87,7 @@ class ContactsFragment : Fragment(){
         val dialogue: AlertDialog =
             SpotsDialog.Builder().setContext(activity).setTheme(R.style.Custom).setCancelable(true).build()
         dialogue.show()
-        //viewModel.show()
+        viewModel.show()
         viewModel.getContactLiveData?.observe( requireActivity(), Observer  { User ->
             dialogue.dismiss()
             userList = User as List<User>
@@ -96,6 +97,14 @@ class ContactsFragment : Fragment(){
         })
     }
 
+    //add contact to firebase
+    override fun onItemClick(position: Int) {
+        userList[position]
+        viewModel.insertContactFirebase(userList[position])
+
+       Toast.makeText(view?.context,userList[position].toString(),Toast.LENGTH_SHORT).show()
+
+    }
 
 
 }
