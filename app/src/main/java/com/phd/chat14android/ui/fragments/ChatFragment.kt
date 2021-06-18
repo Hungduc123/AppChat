@@ -68,7 +68,7 @@ class ChatFragment : Fragment() {
                     p1: Int,
                     chatListModel: ChatListModel
                 ) {
-                    val databaseReference = FirebaseDatabase.getInstance().getReference("Users")
+                    val databaseReference = FirebaseDatabase.getInstance().getReference("users")
                         .child(chatListModel.member)
                     databaseReference.addValueEventListener(object : ValueEventListener {
                         override fun onDataChange(snapshot: DataSnapshot) {

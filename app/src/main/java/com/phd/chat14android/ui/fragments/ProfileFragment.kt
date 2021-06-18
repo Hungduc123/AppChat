@@ -71,6 +71,7 @@ class  ProfileFragment : Fragment() {
             binding.cardNamme.setOnClickListener {
                 val intent = Intent(context, EditNameActivity::class.java)
                 intent.putExtra("name", userModel.name)
+
                 startActivityForResult(intent, 100)
             }
 
@@ -127,6 +128,8 @@ class  ProfileFragment : Fragment() {
                     val result = CropImage.getActivityResult(data)
                     if (resultCode == Activity.RESULT_OK) {
                         viewModel.updateImage(result.uri)
+                        val editor = sharedPreferences.edit()
+                        editor.putString("myImage", result.uri.toString()).apply()
                     }
                 }
             }
