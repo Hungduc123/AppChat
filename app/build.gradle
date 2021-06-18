@@ -85,4 +85,17 @@ dependencies {
 
     // Image cropper
     api 'com.theartofdev.edmodo:android-image-cropper:2.8.0'
+
+    //for spots dialogue
+    implementation 'com.github.d-max:spots-dialog:1.1@aar'
+
+    // lottie animation
+    implementation 'com.airbnb.android:lottie:3.7.0'
+
+    //firebase ui
+    implementation 'com.firebaseui:firebase-ui-database:7.2.0'
+
+    implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
+
+
 }
