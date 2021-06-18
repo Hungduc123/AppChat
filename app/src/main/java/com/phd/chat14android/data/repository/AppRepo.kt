@@ -46,6 +46,16 @@ class AppRepo {
             })
             return liveData!!
     }
+    fun updateUID(uid: String?) {
+
+
+        val databaseReference: DatabaseReference =
+            FirebaseDatabase.getInstance().getReference("users").child(appUtil.getUID()!!)
+
+        val map = mapOf<String, Any>("uid" to uid!!)
+        databaseReference.updateChildren(map)
+
+    }
 
     fun updateName(userName: String?) {
 

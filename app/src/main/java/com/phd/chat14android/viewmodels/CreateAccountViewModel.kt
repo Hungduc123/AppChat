@@ -2,6 +2,7 @@ package com.phd.chat14android.viewmodels
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.phd.chat14android.data.models.CreateUser
 import com.phd.chat14android.data.repository.AuthRepository
@@ -34,6 +35,8 @@ class CreateAccountViewModel : DefaultViewModel() {
             if (result is Result.Success) {
                 mIsCreatedEvent.value = Event(result.data!!)
                 appRepo.updateName(createUser.displayName)
+                val uid = FirebaseAuth.getInstance().uid ?: return@createUser
+                appRepo.updateUID(uid)
             }
             if (result is Result.Success || result is Result.Error) isCreatingAccount.value = false
         }

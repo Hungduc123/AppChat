@@ -1,62 +1,127 @@
 package com.phd.chat14android.ui.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.databinding.DataBindingUtil
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.firebase.ui.database.FirebaseRecyclerAdapter
+import com.firebase.ui.database.FirebaseRecyclerOptions
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.phd.chat14android.R
+import com.phd.chat14android.data.models.ChatListModel
+import com.phd.chat14android.data.models.ChatModel
+import com.phd.chat14android.data.models.User
+import com.phd.chat14android.databinding.ChatItemLayoutBinding
+import com.phd.chat14android.databinding.FragmentChatBinding
+import com.phd.chat14android.ui.MessageActivity
+import com.phd.chat14android.util.AppUtil
 
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [ChatFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class ChatFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private val TAG = ChatFragment::class.java.simpleName
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private lateinit var binding: FragmentChatBinding
+    private lateinit var appUtil: AppUtil
+    private lateinit var firebaseRecyclerAdapter: FirebaseRecyclerAdapter<ChatListModel, ViewHolder>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_chat, container, false)
+
+        binding = FragmentChatBinding.inflate(layoutInflater, container, false)
+        appUtil = AppUtil()
+        readChat()
+
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment ChatFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            ChatFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+
+    private fun readChat() {
+
+        val query =
+            FirebaseDatabase.getInstance().getReference("ChatList").child(appUtil.getUID()!!)
+        val firebaseRecyclerOptions = FirebaseRecyclerOptions.Builder<ChatListModel>()
+            .setLifecycleOwner(this)
+            .setQuery(query, ChatListModel::class.java)
+            .build()
+        firebaseRecyclerAdapter =
+            object : FirebaseRecyclerAdapter<ChatListModel, ViewHolder>(firebaseRecyclerOptions) {
+                override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+                    val chatItemLayoutBinding: ChatItemLayoutBinding = DataBindingUtil.inflate(
+                        LayoutInflater.from(parent.context),
+                        R.layout.chat_item_layout, parent, false
+                    )
+
+                    return ViewHolder(chatItemLayoutBinding)
+                }
+
+                override fun onBindViewHolder(
+                    holder: ViewHolder,
+                    p1: Int,
+                    chatListModel: ChatListModel
+                ) {
+                    val databaseReference = FirebaseDatabase.getInstance().getReference("Users")
+                        .child(chatListModel.member)
+                    databaseReference.addValueEventListener(object : ValueEventListener {
+                        override fun onDataChange(snapshot: DataSnapshot) {
+                            if (snapshot.exists()) {
+                                val userModel = snapshot.getValue(User::class.java)
+                                val date = appUtil.getTimeAgo(chatListModel.date.toLong())
+
+                                val chatModel = ChatModel(
+                                    chatListModel.chatId,
+                                    userModel?.name,
+                                    chatListModel.lastMessage,
+                                    userModel?.profileImageUrl,
+                                    date,
+                                    userModel?.online
+                                )
+
+                                holder.chatItemLayoutBinding.chatModel = chatModel
+
+                                holder.itemView.setOnClickListener {
+                                    val intent = Intent(context, MessageActivity::class.java)
+                                    intent.putExtra("hisId", userModel?.uid)
+                                    intent.putExtra("hisImage", userModel?.profileImageUrl)
+                                    intent.putExtra("chatId", chatListModel.chatId)
+                                    startActivity(intent)
+                                }
+
+                            }
+                        }
+
+                        override fun onCancelled(error: DatabaseError) {
+                            TODO("Not yet implemented")
+                        }
+                    })
                 }
             }
+
+        binding.recyclerViewChat.layoutManager = LinearLayoutManager(context)
+        binding.recyclerViewChat.setHasFixedSize(false)
+        binding.recyclerViewChat.adapter = firebaseRecyclerAdapter
     }
+
+
+    class ViewHolder(val chatItemLayoutBinding: ChatItemLayoutBinding) :
+        RecyclerView.ViewHolder(chatItemLayoutBinding.root)
+
+    override fun onResume() {
+        super.onResume()
+        firebaseRecyclerAdapter.startListening()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        firebaseRecyclerAdapter.stopListening()
+    }
+
 }

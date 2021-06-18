@@ -1,6 +1,7 @@
 package com.phd.chat14android.ui.fragments
 
 import android.app.AlertDialog
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,16 +13,16 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.phd.chat14android.R
-import com.phd.chat14android.data.models.ContactUser
 import com.phd.chat14android.data.models.User
 import com.phd.chat14android.databinding.FragmentContactsBinding
+import com.phd.chat14android.ui.MessageActivity
 import com.phd.chat14android.ui.adapter.ContactAdapter
 import com.phd.chat14android.viewmodels.ContactViewModel
 import dmax.dialog.SpotsDialog
 import java.util.*
 
 
-class ContactsFragment : Fragment() {
+class ContactsFragment : Fragment(){
 
     private lateinit var viewModel: ContactViewModel
     private var userList: List<User> = ArrayList<User>()
@@ -94,5 +95,7 @@ class ContactsFragment : Fragment() {
             binding.recycleViewId.adapter = adapter
         })
     }
+
+
 
 }

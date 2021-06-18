@@ -1,6 +1,7 @@
 package com.phd.chat14android.ui.adapter
 
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,20 +10,19 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.phd.chat14android.R
 import com.phd.chat14android.data.models.User
+import com.phd.chat14android.ui.MessageActivity
 import de.hdodenhof.circleimageview.CircleImageView
 
-class ContactAdapter: RecyclerView.Adapter<ContactAdapter.ContactViewHolder>() {
+class ContactAdapter(): RecyclerView.Adapter<ContactAdapter.ContactViewHolder>() {
 
     var userList: List<User>? = null
-    private var clickInterface: ClickInterface? = null
+
 
     fun getContactList(userList: List<User>?) {
         this.userList = userList as List<User>
     }
 
-    fun ContactAdapter(clickInterface: ClickInterface?) {
-        this.clickInterface = clickInterface
-    }
+
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ContactViewHolder {
@@ -34,6 +34,12 @@ class ContactAdapter: RecyclerView.Adapter<ContactAdapter.ContactViewHolder>() {
     override fun onBindViewHolder(holder: ContactViewHolder, position: Int) {
         val item = userList?.get(position)
         holder.bind(item!!)
+        holder.itemView.setOnClickListener {
+            val intent = Intent(it.context, MessageActivity::class.java)
+            intent.putExtra("hisId", item.uid)
+            intent.putExtra("hisImage", item.profileImageUrl)
+            it.context.startActivity(intent)
+        }
     }
 
     override fun getItemCount(): Int {
@@ -41,7 +47,7 @@ class ContactAdapter: RecyclerView.Adapter<ContactAdapter.ContactViewHolder>() {
     }
 
 
-    class ContactViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class ContactViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
 
         val circleImageView = itemView.findViewById<CircleImageView>(R.id.imgContact)
@@ -54,12 +60,19 @@ class ContactAdapter: RecyclerView.Adapter<ContactAdapter.ContactViewHolder>() {
                 .load(item.profileImageUrl)
                 .into(circleImageView)
         }
+//        init {
+//            itemView.setOnClickListener(this)
+//        }
+//        override fun onClick(v: View?) {
+//            val position = adapterPosition
+//            if (position != RecyclerView.NO_POSITION) {
+//                listener.onItemClick(position)
+//            }
+//        }
     }
 
 
-    interface ClickInterface {
-        // for on Click....
+    interface OnItemClickListener {
         fun onItemClick(position: Int)
-        fun onLongItemClick(position: Int)
     }
 }
